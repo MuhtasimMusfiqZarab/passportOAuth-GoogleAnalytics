@@ -1,5 +1,10 @@
 const passport = require('passport');
 
+// pointing to token.json (these three)
+const fs = require('fs');
+const path = require('path');
+const tokenPath = path.join(__dirname, 'token.json');
+
 //instruct passport how to authenticate user with google oauth
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
@@ -8,6 +13,43 @@ const keys = require('../config/keys');
 
 //get access to the userModel
 const User = mongoose.model('users');
+
+//-------------------------------Managing the token from Passport-----------------
+
+function saveToken(token) {
+  var _token = {
+    token: token,
+  };
+  try {
+    fs.writeFileSync(tokenPath, JSON.stringify(_token));
+    console.log('Token Saved');
+    return fs.readFileSync(tokenPath);
+  } catch (err) {
+    console.log('------------ Could Not Save Token ------------------');
+    console.log(err);
+  }
+}
+
+//main code for gettign the token
+function getToken() {
+  try {
+    // fs.writeFileSync(tokenPath, JSON.stringify(_token));
+    let token = fs.readFileSync(tokenPath);
+    token = JSON.parse(token);
+    console.log('I have got the token man', token);
+    return token.token;
+  } catch (err) {
+    console.log('------------ Could Not get Token ------------------');
+    console.log(err);
+  }
+}
+
+function deleteToken() {
+  fs.writeFileSync(tokenPath, JSON.stringify({}));
+  return fs.readFileSync(tokenPath);
+}
+
+//-------------------------Token Management ends here ---------------------------------
 
 //this creates some token for upcomming followup requests
 passport.serializeUser((user, done) => {
@@ -38,6 +80,10 @@ passport.use(
       console.log('This is refreshToken', refreshToken);
       console.log('This is profile', profile);
 
+      //save the token to a file for future use if needed
+      saveToken({ accessToken, refreshToken });
+
+      //check if the user already is created in the DB
       const existingUser = await User.findOne({ googleID: profile.id });
       if (existingUser) {
         console.log(existingUser);
@@ -81,3 +127,10 @@ const obj = new GoogleStrategy(
 );
 
 console.log('This is the google stratgy object', obj);
+
+//------------------exporting only the token management functions--------------
+module.exports = {
+  saveToken: saveToken,
+  getToken: getToken,
+  deleteToken: deleteToken,
+};

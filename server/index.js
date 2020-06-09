@@ -30,8 +30,16 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+//------------------------------Routes---------------- */
+
 //authRoute is a function that takes the app and attaches these two routes to it
 require('./routes/authRoutes')(app);
+
+//custom route for integreting Google Analytics (wring my own way for testing (try to include the file here))
+const indexRouter = require('./routes/index');
+app.use('/', indexRouter);
+
+//***************Custom Route Ends---------------------- */
 
 //listen to ports
 const PORT = process.env.PORT || 5000;
