@@ -1,5 +1,8 @@
 const passport = require('passport');
 
+//---for google analytics
+const indexRouter = require('../routes/googleAnalytics');
+
 //trick: way to use app which is defined inside index.js (wrap the route handlers in this arrow function and export a function from this file)
 module.exports = (app) => {
   //route handler that make sure that user gets kicked to the passport flow
@@ -7,6 +10,10 @@ module.exports = (app) => {
     '/auth/google',
     passport.authenticate('google', {
       scope: ['profile', 'email'],
+      //provides the offline - means gives you the refresh token too
+      accessType: 'offline',
+      // provides with an approval parameter
+      approvalPrompt: 'force',
     })
   );
 
@@ -33,4 +40,9 @@ module.exports = (app) => {
   app.get('/api/current_user', (req, res) => {
     res.send(req.user);
   });
+
+  //-----------CUstom Route for getting the analytics data=================
+
+  //custom route for integreting Google Analytics (wring my own way for testing (try to include the file here))
+  // app.get('/', indexRouter);
 };
