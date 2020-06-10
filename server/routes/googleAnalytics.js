@@ -20,6 +20,8 @@ module.exports = (app) => {
       res.send('No Token');
     }
 
+    //here is the authorization scope
+
     //getting new instance of authlient (here oAuthClient is initialized with an object, in this object we would put our keys)
     // let oAuthClient = auth.getOAuthClient();
     let oAuthClient = new google.auth.OAuth2(

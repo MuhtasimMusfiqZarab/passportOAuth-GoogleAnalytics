@@ -3,13 +3,20 @@ const passport = require('passport');
 //---for google analytics
 const indexRouter = require('../routes/googleAnalytics');
 
+const authPassport = require('../services/passport');
+
 //trick: way to use app which is defined inside index.js (wrap the route handlers in this arrow function and export a function from this file)
 module.exports = (app) => {
   //route handler that make sure that user gets kicked to the passport flow
   app.get(
     '/auth/google',
     passport.authenticate('google', {
-      scope: ['profile', 'email'],
+      //we will put the scope for accesing the google analytics which is the 3rd scope
+      scope: [
+        'profile',
+        'email',
+        'https://www.googleapis.com/auth/analytics.edit',
+      ],
       //provides the offline - means gives you the refresh token too
       accessType: 'offline',
       // provides with an approval parameter
@@ -32,7 +39,13 @@ module.exports = (app) => {
 
   //loggin out the user
   app.get('/api/logout', (req, res) => {
+    //delete session may be
     req.logout();
+
+    //delete the token from file
+    authPassport.deleteToken();
+
+    //redirects to the home page
     res.redirect('/');
   });
 
