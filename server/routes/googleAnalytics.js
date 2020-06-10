@@ -12,6 +12,8 @@ module.exports = (app) => {
   //route for analytics
   app.get('/', async (req, res, next) => {
     //extract token from oAuth
+
+    console.log('+++++++++++++++++++++++++++++++++++++++++++++');
     let _token = await token.getToken();
 
     console.log('Here is the token to see what type is it ?', _token);
@@ -34,7 +36,8 @@ module.exports = (app) => {
     try {
       //putting the access_tokens inside the oAuthClient object
       oAuthClient.setCredentials(_token);
-      console.log('Here is the oAuthClient', oAuthClient);
+
+      console.log('++++Here is the oAuthClient++++', oAuthClient);
     } catch (err) {
       console.log(err);
     }
@@ -42,7 +45,8 @@ module.exports = (app) => {
     //using V3 of the analytics API
     let analytics = google.analytics({
       version: 'v3',
-      auth: oAuthClient, //auth client is your API key
+      auth: 'AIzaSyD6ixDzUwseSs50FFJcy0wmdqXBkiBi0zU',
+      // auth: oAuthClient //auth client is your API key
     });
 
     try {
