@@ -82,8 +82,8 @@ passport.use(
 
       //save the token to a file for future use if needed
       saveToken({
-        accessToken,
-        refreshToken,
+        access_token: accessToken,
+        refresh_token: refreshToken,
         //dont know if it is necessary or not
         RedirectionUrl: '/auth/google/callback',
       });

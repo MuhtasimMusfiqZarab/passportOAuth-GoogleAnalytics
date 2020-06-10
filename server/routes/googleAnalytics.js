@@ -29,13 +29,20 @@ module.exports = (app) => {
     let oAuthClient = new google.auth.OAuth2(
       keys.googleClientID,
       keys.googleClientSecret,
-      '/auth/google/callback'
+      // '/auth/google/callback'
+      'http://localhost:3000/auth/google/callback'
     );
 
     //it has got a token object after loggin
     try {
       //putting the access_tokens inside the oAuthClient object
-      oAuthClient.setCredentials(_token);
+      oAuthClient.setCredentials({
+        //this are copy and pasted from token.json
+        access_token:
+          'ya29.a0AfH6SMCwjWyGpb71DpQX2GrgROprJrjvNwi1QwDT6Wqhz5SNr_hsE2pGxiNvvaF5pa0wbp98ZM6l-VcQutMpclwnODHtQgUp8S6rlUtSVf9Y0QZpwK6_WXtqItD_oM3t1S3FCTW0nNaYVJsrOjmpUl4l7RzvzuU3I5w',
+        refresh_token:
+          '1//0gkgDmFaOWsP6CgYIARAAGBASNwF-L9Ir8oWW02e9eNObutId4mnb7WzLLgZd-qy6TudGuVYdDazALlf8x0nz0WwCfR4qLN0BbYE',
+      });
 
       console.log('++++Here is the oAuthClient++++', oAuthClient);
     } catch (err) {
@@ -45,7 +52,8 @@ module.exports = (app) => {
     //using V3 of the analytics API
     let analytics = google.analytics({
       version: 'v3',
-      auth: 'AIzaSyD6ixDzUwseSs50FFJcy0wmdqXBkiBi0zU',
+      auth: oAuthClient, //API was used here for testing
+      // auth: oAuthClient, //using object from the legecy code
       // auth: oAuthClient //auth client is your API key
     });
 
